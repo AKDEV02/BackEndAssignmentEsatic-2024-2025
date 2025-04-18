@@ -47,3 +47,10 @@ bootRun {
 test {
 	useJUnitPlatform()
 }
+
+tasks.named('bootJar') {
+	archiveFileName = 'backend-assignment-esatic.jar'
+}
+springBoot {
+	mainClass = 'com.esatic.assignmentapp.AssignmentAppApplication'
+}
