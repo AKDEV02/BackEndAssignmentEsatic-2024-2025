@@ -47,7 +47,7 @@ public class MockarooDataGenerator implements CommandLineRunner {
     private final RestTemplate restTemplate;
     private final ObjectMapper objectMapper;
 
-    @Value("${app.mockaroo.api-key:e04277b0}")
+    @Value("${app.mockaroo.api-key:6bddbd20}")
     private String mockarooApiKey;
 
     @Value("${app.mockaroo.cache-directory:./mock-data}")

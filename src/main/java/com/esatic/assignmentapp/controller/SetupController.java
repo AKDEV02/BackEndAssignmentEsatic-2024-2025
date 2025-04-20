@@ -44,7 +44,7 @@ public class SetupController {
     private final ObjectMapper objectMapper;
     private boolean useDataCache = true;
 
-    @Value("${app.mockaroo.api-key:7a6af8a0}")
+    @Value("${app.mockaroo.api-key:6bddbd20")
     private String mockarooApiKey;
 
     @Value("${app.mockaroo.cache-directory:./mock-data}")
@@ -253,12 +253,12 @@ public class SetupController {
     public ResponseEntity<Map<String, Object>> initializeMockarooData(
             @RequestParam(value = "force", defaultValue = "false") boolean force,
             @RequestParam(value = "useCache", defaultValue = "true") boolean useCache,
-            @RequestParam(value = "admins", defaultValue = "2") int admins,
-            @RequestParam(value = "teachers", defaultValue = "3") int teachers,
-            @RequestParam(value = "subjects", defaultValue = "5") int subjects,
-            @RequestParam(value = "students", defaultValue = "10") int students,
-            @RequestParam(value = "classes", defaultValue = "5") int classes,
-            @RequestParam(value = "assignments", defaultValue = "20") int assignments) {
+            @RequestParam(value = "admins", defaultValue = "5") int admins,
+            @RequestParam(value = "teachers", defaultValue = "30") int teachers,
+            @RequestParam(value = "subjects", defaultValue = "50") int subjects,
+            @RequestParam(value = "students", defaultValue = "100") int students,
+            @RequestParam(value = "classes", defaultValue = "50") int classes,
+            @RequestParam(value = "assignments", defaultValue = "1000") int assignments) {
 
         Map<String, Object> response = new HashMap<>();
 
