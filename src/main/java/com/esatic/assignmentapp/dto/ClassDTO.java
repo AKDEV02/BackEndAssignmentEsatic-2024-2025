@@ -5,13 +5,14 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Date;
+
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class SubjectInfoDTO {
-    private String id;
+public class ClassDTO {
     private String name;
-    private String imageUrl;
-    private String color;
+    private String year;
+    private String description;
 }

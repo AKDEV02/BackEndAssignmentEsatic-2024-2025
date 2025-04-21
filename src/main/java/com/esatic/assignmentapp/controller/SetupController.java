@@ -109,7 +109,7 @@ public class SetupController {
                     .name("Classe Test")
                     .year("2024-2025")
                     .description("Classe utilisée pour les tests")
-                    .students(new ArrayList<>())
+//                    .students(new ArrayList<>())
                     .createdAt(new Date())
                     .updatedAt(new Date())
                     .build();
@@ -133,7 +133,7 @@ public class SetupController {
             User savedStudent = userRepository.save(student);
 
             // Mettre à jour la classe avec l'étudiant
-            savedClass.getStudents().add(savedStudent);
+//            savedClass.getStudents().add(savedStudent);
             classRepository.save(savedClass);
 
             // 4. Créer un enseignant
@@ -483,7 +483,7 @@ public class SetupController {
                         .name((String) data.get("name"))
                         .year((String) data.get("year"))
                         .description((String) data.get("description"))
-                        .students(new ArrayList<>())
+//                        .students(new ArrayList<>())
                         .createdAt(new Date())
                         .updatedAt(new Date())
                         .build();
@@ -687,7 +687,7 @@ public class SetupController {
         for (Class classEntity : classes) {
             List<User> classStudents = studentsByClass.get(classEntity.getId());
             if (classStudents != null) {
-                classEntity.setStudents(classStudents);
+//                classEntity.setStudents(classStudents);
             }
         }
 

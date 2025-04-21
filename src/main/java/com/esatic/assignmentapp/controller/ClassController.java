@@ -1,7 +1,7 @@
 package com.esatic.assignmentapp.controller;
 
-import com.esatic.assignmentapp.model.Class;
-import com.esatic.assignmentapp.model.User;
+import com.esatic.assignmentapp.dto.ClassDTO;
+import com.esatic.assignmentapp.dto.ClassResponseDTO;
 import com.esatic.assignmentapp.service.ClassService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -20,57 +20,49 @@ public class ClassController {
     private final ClassService classService;
 
     @GetMapping
-    public ResponseEntity<List<Class>> getAllClasses() {
+    public ResponseEntity<List<ClassResponseDTO>> getAllClasses() {
         return ResponseEntity.ok(classService.getAllClasses());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Class> getClassById(@PathVariable String id) {
+    public ResponseEntity<ClassResponseDTO> getClassById(@PathVariable String id) {
         return ResponseEntity.ok(classService.getClassById(id));
     }
 
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Class> createClass(@Valid @RequestBody Class classData) {
-        return new ResponseEntity<>(classService.createClass(classData), HttpStatus.CREATED);
+    public ResponseEntity<ClassResponseDTO> createClass(@Valid @RequestBody ClassDTO classDTO) {
+        return new ResponseEntity<>(classService.createClass(classDTO), HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Class> updateClass(
+    public ResponseEntity<ClassResponseDTO> updateClass(
             @PathVariable String id,
-            @Valid @RequestBody Class classData
-    ) {
-        return ResponseEntity.ok(classService.updateClass(id, classData));
+            @Valid @RequestBody ClassDTO classDTO) {
+        return ResponseEntity.ok(classService.updateClass(id, classDTO));
     }
 
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> deleteClass(@PathVariable String id) {
         classService.deleteClass(id);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        return ResponseEntity.noContent().build();
     }
-
-//    @GetMapping("/{id}/students")
-//    public ResponseEntity<List<User>> getStudentsByClass(@PathVariable String id) {
-//        return ResponseEntity.ok(classService.getStudentsByClassId(id));
-//    }
 
     @PostMapping("/{id}/students/{studentId}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Class> addStudentToClass(
+    public ResponseEntity<ClassResponseDTO> addStudentToClass(
             @PathVariable String id,
-            @PathVariable String studentId
-    ) {
+            @PathVariable String studentId) {
         return ResponseEntity.ok(classService.addStudentToClass(id, studentId));
     }
 
     @DeleteMapping("/{id}/students/{studentId}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Class> removeStudentFromClass(
+    public ResponseEntity<ClassResponseDTO> removeStudentFromClass(
             @PathVariable String id,
-            @PathVariable String studentId
-    ) {
+            @PathVariable String studentId) {
         return ResponseEntity.ok(classService.removeStudentFromClass(id, studentId));
     }
 }

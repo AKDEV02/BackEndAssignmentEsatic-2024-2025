@@ -1,6 +1,7 @@
 package com.esatic.assignmentapp.service;
 
 import com.esatic.assignmentapp.dto.SubjectDTO;
+import com.esatic.assignmentapp.dto.SubjectResponseDTO;
 import com.esatic.assignmentapp.exception.ResourceNotFoundException;
 import com.esatic.assignmentapp.model.Subject;
 import com.esatic.assignmentapp.model.Teacher;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -19,112 +21,83 @@ import java.util.List;
 public class SubjectService {
 
     private final SubjectRepository subjectRepository;
-    private final TeacherRepository teacherRepository;  // Utilisez TeacherRepository au lieu de UserRepository
+    private final TeacherRepository teacherRepository;
 
-    public List<Subject> getAllSubjects() {
-        return subjectRepository.findAll();
+    public List<SubjectResponseDTO> getAllSubjects() {
+        return subjectRepository.findAll().stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
     }
 
-    public Subject getSubjectById(String id) {
+    public SubjectResponseDTO getSubjectById(String id) {
+        return subjectRepository.findById(id)
+                .map(this::convertToDTO)
+                .orElseThrow(() -> new ResourceNotFoundException("Subject", "id", id));
+    }
+
+    private SubjectResponseDTO convertToDTO(Subject subject) {
+        return SubjectResponseDTO.builder()
+                .id(subject.getId())
+                .name(subject.getName())
+                .imageUrl(subject.getImageUrl())
+                .teacherId(subject.getTeacher() != null ? subject.getTeacher().getId() : null)
+                .teacherName(subject.getTeacher() != null ?
+                        subject.getTeacher().getFirstName() + " " + subject.getTeacher().getLastName() : null)
+                .color(subject.getColor())
+                .description(subject.getDescription())
+                .createdAt(subject.getCreatedAt())
+                .updatedAt(subject.getUpdatedAt())
+                .build();
+    }
+
+    public SubjectResponseDTO createSubject(SubjectDTO subjectDTO) {
+        Subject subject = new Subject();
+        subject.setName(subjectDTO.getName());
+        subject.setImageUrl(subjectDTO.getImageUrl());
+        subject.setColor(subjectDTO.getColor());
+        subject.setDescription(subjectDTO.getDescription());
+        subject.setCreatedAt(new Date());
+        subject.setUpdatedAt(new Date());
+
+        if (subjectDTO.getTeacherId() != null) {
+            teacherRepository.findById(subjectDTO.getTeacherId())
+                    .ifPresent(subject::setTeacher);
+        }
+
+        return convertToDTO(subjectRepository.save(subject));
+    }
+
+    public SubjectResponseDTO updateSubject(String id, SubjectDTO subjectDTO) {
+        Subject subject = getSubjectEntityById(id);
+
+        subject.setName(subjectDTO.getName());
+        subject.setImageUrl(subjectDTO.getImageUrl());
+        subject.setColor(subjectDTO.getColor());
+        subject.setDescription(subjectDTO.getDescription());
+        subject.setUpdatedAt(new Date());
+
+        if (subjectDTO.getTeacherId() != null) {
+            if (subjectDTO.getTeacherId().trim().isEmpty()) {
+                subject.setTeacher(null);
+            } else {
+                teacherRepository.findById(subjectDTO.getTeacherId())
+                        .ifPresentOrElse(
+                                subject::setTeacher,
+                                () -> subject.setTeacher(null)
+                        );
+            }
+        }
+
+        return convertToDTO(subjectRepository.save(subject));
+    }
+
+    private Subject getSubjectEntityById(String id) {
         return subjectRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Subject", "id", id));
     }
 
-    public Subject createSubject(SubjectDTO subjectDTO) {
-        log.info("Création d'une matière avec DTO: {}", subjectDTO);
-
-        try {
-            Subject subject = new Subject();
-            subject.setName(subjectDTO.getName());
-            subject.setImageUrl(subjectDTO.getImageUrl());
-            subject.setColor(subjectDTO.getColor());
-            subject.setDescription(subjectDTO.getDescription());
-            subject.setCreatedAt(new Date());
-            subject.setUpdatedAt(new Date());
-
-            // Récupérer l'enseignant si un ID est fourni
-            if (subjectDTO.getTeacherId() != null && !subjectDTO.getTeacherId().trim().isEmpty()) {
-                log.info("Recherche de l'enseignant avec ID: {}", subjectDTO.getTeacherId());
-                try {
-                    Teacher teacher = teacherRepository.findById(subjectDTO.getTeacherId()).orElse(null);
-
-                    if (teacher == null) {
-                        log.warn("Enseignant avec ID '{}' non trouvé. La matière sera créée sans enseignant.",
-                                subjectDTO.getTeacherId());
-                    } else {
-                        subject.setTeacher(teacher);
-                        log.info("Enseignant associé: {}", teacher);
-                    }
-                } catch (Exception e) {
-                    log.warn("Erreur lors de la recherche de l'enseignant '{}': {}",
-                            subjectDTO.getTeacherId(), e.getMessage());
-                }
-            }
-
-            log.info("Sauvegarde de la matière: {}", subject);
-            return subjectRepository.save(subject);
-        } catch (Exception e) {
-            log.error("Erreur lors de la création de la matière: {}", e.getMessage(), e);
-            throw e;
-        }
-    }
-
-    public Subject updateSubject(String id, SubjectDTO subjectDTO) {
-        log.info("Mise à jour de la matière {} avec DTO: {}", id, subjectDTO);
-
-        try {
-            Subject subject = getSubjectById(id);
-
-            // Mettre à jour les propriétés
-            subject.setName(subjectDTO.getName());
-            subject.setImageUrl(subjectDTO.getImageUrl());
-            subject.setColor(subjectDTO.getColor());
-            subject.setDescription(subjectDTO.getDescription());
-            subject.setUpdatedAt(new Date());
-
-            // Mettre à jour l'enseignant si nécessaire
-            if (subjectDTO.getTeacherId() != null) {
-                if (subjectDTO.getTeacherId().trim().isEmpty()) {
-                    // Si une chaîne vide est fournie, définir l'enseignant sur null
-                    subject.setTeacher(null);
-                    log.info("Enseignant défini sur null (chaîne vide fournie)");
-                } else {
-                    // Rechercher l'enseignant
-                    try {
-                        Teacher teacher = teacherRepository.findById(subjectDTO.getTeacherId()).orElse(null);
-
-                        if (teacher == null) {
-                            log.warn("Enseignant avec ID '{}' non trouvé lors de la mise à jour. Enseignant inchangé.",
-                                    subjectDTO.getTeacherId());
-                        } else {
-                            subject.setTeacher(teacher);
-                            log.info("Enseignant mis à jour: {}", teacher);
-                        }
-                    } catch (Exception e) {
-                        log.warn("Erreur lors de la recherche de l'enseignant '{}': {}",
-                                subjectDTO.getTeacherId(), e.getMessage());
-                    }
-                }
-            }
-
-            log.info("Sauvegarde de la matière mise à jour: {}", subject);
-            return subjectRepository.save(subject);
-        } catch (Exception e) {
-            log.error("Erreur lors de la mise à jour de la matière: {}", e.getMessage(), e);
-            throw e;
-        }
-    }
-
     public void deleteSubject(String id) {
-        log.info("Suppression de la matière: {}", id);
-
-        try {
-            Subject subject = getSubjectById(id);
-            subjectRepository.delete(subject);
-            log.info("Matière supprimée avec succès: {}", id);
-        } catch (Exception e) {
-            log.error("Erreur lors de la suppression de la matière: {}", e.getMessage(), e);
-            throw e;
-        }
+        Subject subject = getSubjectEntityById(id);
+        subjectRepository.delete(subject);
     }
 }

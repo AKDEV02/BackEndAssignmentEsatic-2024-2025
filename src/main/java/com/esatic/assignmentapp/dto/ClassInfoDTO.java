@@ -1,13 +1,15 @@
 package com.esatic.assignmentapp.dto;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@AllArgsConstructor
+@Builder
 @NoArgsConstructor
-public class ClassInfoDTO {
+@AllArgsConstructor
+class ClassInfoDTO {
     private String id;
     private String name;
     private String year;

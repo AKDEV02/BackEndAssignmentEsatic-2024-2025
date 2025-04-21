@@ -9,9 +9,10 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class SubjectInfoDTO {
+public class StudentInfoDTO {
     private String id;
-    private String name;
-    private String imageUrl;
-    private String color;
+    private String firstName;
+    private String lastName;
+    private String email;
+    private String photoUrl;
 }

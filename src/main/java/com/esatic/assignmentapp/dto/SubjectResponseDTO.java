@@ -1,24 +1,23 @@
-package com.esatic.assignmentapp.model;
+package com.esatic.assignmentapp.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.Date;
 
 @Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-@Document(collection = "classes")
-public class Class {
-    @Id
+public class SubjectResponseDTO {
     private String id;
     private String name;
-    private String year;
+    private String imageUrl;
+    private String teacherId;
+    private String teacherName;
+    private String color;
     private String description;
     private Date createdAt;
     private Date updatedAt;
