@@ -51,10 +51,10 @@ public class ClassController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @GetMapping("/{id}/students")
-    public ResponseEntity<List<User>> getStudentsByClass(@PathVariable String id) {
-        return ResponseEntity.ok(classService.getStudentsByClassId(id));
-    }
+//    @GetMapping("/{id}/students")
+//    public ResponseEntity<List<User>> getStudentsByClass(@PathVariable String id) {
+//        return ResponseEntity.ok(classService.getStudentsByClassId(id));
+//    }
 
     @PostMapping("/{id}/students/{studentId}")
     @PreAuthorize("hasRole('ADMIN')")

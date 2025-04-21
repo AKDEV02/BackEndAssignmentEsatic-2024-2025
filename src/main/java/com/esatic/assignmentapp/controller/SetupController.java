@@ -44,7 +44,7 @@ public class SetupController {
     private final ObjectMapper objectMapper;
     private boolean useDataCache = true;
 
-    @Value("${app.mockaroo.api-key:6bddbd20")
+    @Value("${app.mockaroo.api-key:6bddbd20}")
     private String mockarooApiKey;
 
     @Value("${app.mockaroo.cache-directory:./mock-data}")

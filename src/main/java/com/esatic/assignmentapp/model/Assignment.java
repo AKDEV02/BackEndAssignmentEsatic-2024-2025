@@ -32,6 +32,6 @@ public class Assignment {
     private Date createdAt;
     private Date updatedAt;
     @DBRef
-    private Class classId; // ID de la classe assignée
-    private List<String> attachments; // URLs des fichiers attachés
+    private Class classId;
+    private List<String> attachments;
 }

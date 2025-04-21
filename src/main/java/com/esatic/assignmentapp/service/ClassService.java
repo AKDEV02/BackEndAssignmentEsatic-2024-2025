@@ -48,20 +48,20 @@ public class ClassService {
         Class classToDelete = getClassById(id);
 
         // Suppression des références dans les utilisateurs
-        if (classToDelete.getStudents() != null) {
-            for (User student : classToDelete.getStudents()) {
-                student.setClassId(null);
-                userRepository.save(student);
-            }
-        }
+//        if (classToDelete.getStudents() != null) {
+//            for (User student : classToDelete.getStudents()) {
+//                student.setClassId(null);
+//                userRepository.save(student);
+//            }
+//        }
 
         classRepository.delete(classToDelete);
     }
 
-    public List<User> getStudentsByClassId(String classId) {
-        Class classEntity = getClassById(classId);
-        return classEntity.getStudents();
-    }
+//    public List<User> getStudentsByClassId(String classId) {
+//        Class classEntity = getClassById(classId);
+//        return classEntity.getStudents();
+//    }
 
     public Class addStudentToClass(String classId, String studentId) {
         Class classEntity = getClassById(classId);
@@ -72,10 +72,10 @@ public class ClassService {
             throw new IllegalArgumentException("L'utilisateur n'est pas un étudiant");
         }
 
-        // Ajouter l'étudiant à la classe s'il n'y est pas déjà
-        if (classEntity.getStudents() == null || !classEntity.getStudents().contains(student)) {
-            classEntity.getStudents().add(student);
-        }
+//        // Ajouter l'étudiant à la classe s'il n'y est pas déjà
+//        if (classEntity.getStudents() == null || !classEntity.getStudents().contains(student)) {
+//            classEntity.getStudents().add(student);
+//        }
 
         // Attribuer la classe à l'étudiant
         student.setClassId(classEntity);
@@ -89,8 +89,8 @@ public class ClassService {
         User student = userRepository.findById(studentId)
                 .orElseThrow(() -> new ResourceNotFoundException("Étudiant non trouvé avec l'ID: " + studentId));
 
-        // Retirer l'étudiant de la classe
-        classEntity.getStudents().removeIf(s -> s.getId().equals(studentId));
+//        // Retirer l'étudiant de la classe
+//        classEntity.getStudents().removeIf(s -> s.getId().equals(studentId));
 
         // Retirer la référence de la classe de l'étudiant
         if (student.getClassId() != null && student.getClassId().getId().equals(classId)) {
